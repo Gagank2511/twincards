@@ -1,3 +1,1 @@
 # Card matching game
-
-# Instructions
