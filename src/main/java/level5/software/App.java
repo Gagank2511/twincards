@@ -18,7 +18,8 @@ import java.util.List;
 public class App extends Application {
     private GameBoard board;
     private List<Button> cards = new ArrayList<>();
-
+    Card flipped1 = null;
+    Card flipped2 = null;
 
     private static Scene scene;
 
@@ -34,7 +35,7 @@ public class App extends Application {
         int cardWidth = 80;
         int cardHeight = 100;
         board = new GameBoard(pairs);
-        List<Button> cards = new ArrayList<>();
+        cards = new ArrayList<>();
 
         for (Card card : board.getCards()) {
             Button btn = new Button("?");
@@ -44,8 +45,8 @@ public class App extends Application {
 
             int index = card.getIndex();
 
+            btn.setId(Integer.toString(index));
             btn.setOnAction(e -> checkCard(card, btn));
-
             grid.add(btn, index % cols, index / cols);
         }
 
@@ -55,8 +56,36 @@ public class App extends Application {
     }
 
     private void checkCard(Card card, Button btn) {
-        System.out.println(card.getValue());
-        btn.setText(card.getValue());
+        // System.out.println(card.getValue());
+        if (card.isFlipped()) {
+            return;
+        }
+        card.flip();
+
+        if (flipped1 == null) {
+            btn.setText(card.getValue());
+            flipped1 = card;
+            return;
+        }
+        if (flipped2 == null) {
+            btn.setText(card.getValue());
+            flipped2 = card;
+        }
+        System.out.println(flipped1);
+        System.out.println(flipped2);
+        if (flipped1.getValue().equals(flipped2.getValue())) {
+            flipped1 = null;
+            flipped2 = null;
+            return;
+        }
+        flipped1.flip();
+        flipped2.flip();
+        btn.setText("?");
+        cards.get(flipped1.getIndex()).setText("?");
+        flipped1 = null;
+        flipped2 = null;
+
+
     }
 
     static void setRoot(String fxml) throws IOException {
